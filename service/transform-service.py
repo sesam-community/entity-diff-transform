@@ -21,16 +21,18 @@ def getPrevious(eid, prev, dataset):
 @app.route('/transform/<dataset>', methods=['POST'])
 def receiver(dataset):
     def generate(entities):
+        change_count = 0
         yield "["
-        for index, entity in enumerate(entities):
-            if index > 0:
-                yield ","
+        for _, entity in enumerate(entities):
 
-            # get previous
+            # get previous or output all props as new value changes
             eid = entity["_id"]            
             pid = entity["_previous"]
             if pid == None:
                 for k in entity.keys():
+                    if change_count > 0:
+                        yield ","
+                    change_count = change_count + 1
                     c = {}
                     c["_id"] = eid + "-" + k + "-" + str(entity["_ts"])
                     c["entity"] = eid
@@ -50,6 +52,9 @@ def receiver(dataset):
 
                 if k in entity:
                     if prevEntity[k] != entity[k]:
+                        if change_count > 0:
+                            yield ","
+                        change_count = change_count + 1
                         c = {}
                         c["_id"] = eid + "-" + k + "-" + str(entity["_ts"])
                         c["entity"] = eid
@@ -58,6 +63,9 @@ def receiver(dataset):
                         c["newvalue"] = entity[k]                         
                         yield json.dumps(c) 
                 else:
+                    if change_count > 0:
+                        yield ","
+                    change_count = change_count + 1
                     c = {}
                     c["_id"] = eid + "-" + k + "-" + str(entity["_ts"])
                     c["entity"] = eid
@@ -69,6 +77,9 @@ def receiver(dataset):
             # check for new properties
             for k in entity.keys():
                 if not k in prevEntity:
+                    if change_count > 0:
+                        yield ","
+                    change_count = change_count + 1
                     c = {}
                     c["_id"] = eid + "-" + k + "-" + str(entity["_ts"])
                     c["entity"] = eid
