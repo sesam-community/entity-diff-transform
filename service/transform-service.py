@@ -25,10 +25,22 @@ def receiver(dataset):
         for index, entity in enumerate(entities):
             if index > 0:
                 yield ","
-                
+
             # get previous
-            eid = entity["_id"]
+            eid = entity["_id"]            
             pid = entity["_previous"]
+            if pid == None:
+                for k in entity.keys():
+                    c = {}
+                    c["_id"] = eid + "-" + k + "-" + str(entity["_ts"])
+                    c["entity"] = eid
+                    c["timestamp"] = entity["_ts"]
+                    c["oldvalue"] = ""
+                    c["newvalue"] = entity[k]                         
+                    yield json.dumps(c)
+                continue 
+
+            # get previous
             prevEntity = getPrevious(eid, pid, dataset)
 
             # check for modified or removed keys
