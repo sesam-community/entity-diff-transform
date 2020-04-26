@@ -36,6 +36,7 @@ def receiver(dataset):
                     c = {}
                     c["_id"] = eid + "-" + k + "-" + str(entity["_ts"])
                     c["entity"] = eid
+                    c["property"] = k
                     c["timestamp"] = entity["_ts"]
                     c["oldvalue"] = ""
                     c["newvalue"] = entity[k]                         
@@ -59,6 +60,7 @@ def receiver(dataset):
                         c["_id"] = eid + "-" + k + "-" + str(entity["_ts"])
                         c["entity"] = eid
                         c["timestamp"] = entity["_ts"]
+                        c["property"] = k                    
                         c["oldvalue"] = prevEntity[k]
                         c["newvalue"] = entity[k]                         
                         yield json.dumps(c) 
@@ -70,6 +72,7 @@ def receiver(dataset):
                     c["_id"] = eid + "-" + k + "-" + str(entity["_ts"])
                     c["entity"] = eid
                     c["timestamp"] = entity["_ts"]
+                    c["property"] = k
                     c["oldvalue"] = prevEntity[k]
                     c["newvalue"] = ""                         
                     yield json.dumps(c)
@@ -84,6 +87,7 @@ def receiver(dataset):
                     c["_id"] = eid + "-" + k + "-" + str(entity["_ts"])
                     c["entity"] = eid
                     c["timestamp"] = entity["_ts"]
+                    c["property"] = k
                     c["oldvalue"] = ""
                     c["newvalue"] = entity[k]                         
                     yield json.dumps(c)
