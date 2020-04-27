@@ -30,8 +30,12 @@ def receiver(dataset):
             pid = entity["_previous"]
             if pid == None:
                 for k in entity.keys():
+                    if k.startswith("_"):
+                        continue
+
                     if change_count > 0:
                         yield ","
+                    
                     change_count = change_count + 1
                     c = {}
                     c["_id"] = eid + "-" + k + "-" + str(entity["_ts"])
@@ -80,6 +84,9 @@ def receiver(dataset):
             # check for new properties
             for k in entity.keys():
                 if not k in prevEntity:
+                    if k.startswith("_"):
+                        continue
+                    
                     if change_count > 0:
                         yield ","
                     change_count = change_count + 1
